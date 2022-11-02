@@ -210,6 +210,7 @@ int32_t view() {
             return i - 1 - nowLocate[0];
         }
     }
+    return -1;
 }
 void resetNowPiece() {
     nowLocate[1] = 3;
