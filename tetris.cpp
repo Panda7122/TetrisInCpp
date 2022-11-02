@@ -14,7 +14,6 @@
 #include <WinUser.h>
 #include <windows.h>
 #define CHECK_KEY(V) (GetKeyState(V) < 0)
-#define sleep(n) Sleep(n)
 #define VK_Z 0x5A
 #define VK_C 0x43
 #else
@@ -24,6 +23,7 @@
     fflush(stdin);
 #include <termios.h>
 #include <unistd.h>
+#define Sleep(n) usleep(1000 * n)
 int32_t take_keypress() {
     struct termios attr;
     struct termios tmp_attr;
@@ -246,6 +246,7 @@ void setUpGame() {
     BacktoBack = 0;
     attack = 0;
     combo = 0;
+    resetNowPiece();
     while (!nextPiece.empty()) nextPiece.pop();
     vector<int32_t> pieceShuffle;
     for (int i = 0; i < 7; ++i) pieceShuffle.push_back(i);
@@ -253,7 +254,7 @@ void setUpGame() {
             default_random_engine(
                 chrono::system_clock::now().time_since_epoch().count()));
     for (int i = 0; i < 7; ++i) nextPiece.push(pieceShuffle[i]);
-    for (int32_t i = 0; i < 20; ++i) {
+    for (int32_t i = 0; i < 25; ++i) {
         for (int32_t j = 0; j < 10; ++j) {
             frame[i][j] = 0;
         }
@@ -769,7 +770,7 @@ void startGame() {
         frameCounter %= (int32_t)(FPS / 30) * levelSpeed[level];
         moveCounter %= (int32_t)(FPS / 30) * 2;
 
-        sleep(1000 / FPS);
+        Sleep(1000 / FPS);
     }
 #ifndef _WIN32
     tcsetattr(fileno(stdin), TCSANOW, &attr);
